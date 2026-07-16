@@ -1,0 +1,32 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pydantic-scavio"
+version = "0.1.0"
+description = "Scavio real-time Google search tool for Pydantic AI agents"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Scavio", email = "support@scavio.dev" }]
+keywords = ["pydantic-ai", "pydantic", "agents", "scavio", "search", "tools", "serp", "tavily-alternative"]
+dependencies = [
+    "pydantic-ai-slim>=1.0",
+    "scavio>=0.5.0",
+    "typing-extensions>=4.0",
+]
+
+[project.urls]
+Homepage = "https://scavio.dev"
+Repository = "https://github.com/scavio-ai/pydantic-scavio"
+Documentation = "https://scavio.dev/docs/pydantic-ai"
+
+[project.optional-dependencies]
+test = ["pytest>=7.0", "pytest-asyncio>=0.23"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["pydantic_scavio"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
