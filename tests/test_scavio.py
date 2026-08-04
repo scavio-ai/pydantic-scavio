@@ -94,6 +94,42 @@ def test_factory_with_client():
     assert tool.name == "scavio_search"
 
 
+def test_surface_is_exactly_one_tool():
+    """This package is curated: one tool, one endpoint (POST /api/v2/google).
+
+    Guards the README's "1 endpoint, flat 1 credit" claim against silent growth.
+    """
+    from pydantic_scavio import __all__ as exported
+
+    assert set(exported) == {'ScavioSearchResult', 'ScavioSearchTool', 'scavio_search_tool'}
+    tool = scavio_search_tool(client=make_mock_client())
+    assert tool.name == 'scavio_search'
+
+
+async def test_only_google_search_is_ever_called():
+    """A client that raises on any other namespace proves nothing else is reachable."""
+
+    class _StrictClient:
+        def __init__(self):
+            self.google = MagicMock()
+            self.google.search = AsyncMock(return_value=V2_RESPONSE)
+
+        def __getattr__(self, name):
+            raise AssertionError(f'curated surface: {name} is not exposed by pydantic-scavio')
+
+    results = await ScavioSearchTool(client=_StrictClient())('anything')
+    assert len(results) == 2
+
+
+async def test_uses_google_v2_vocabulary_only():
+    """/api/v1/google is retired (410). Only the v2 params gl/hl reach the SDK."""
+    client = make_mock_client()
+    await ScavioSearchTool(client=client)('x', country_code='us', language='en')
+    _, kwargs = client.google.search.call_args
+    assert kwargs == {'gl': 'us', 'hl': 'en'}
+    assert not {'country_code', 'language', 'light_request', 'search_type', 'page'} & set(kwargs)
+
+
 @pytest.mark.skipif("SCAVIO_API_KEY" not in os.environ, reason="requires live API key")
 async def test_live_search():
     """One live call against api.scavio.dev (set SCAVIO_API_KEY to run)."""

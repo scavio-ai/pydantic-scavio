@@ -1,8 +1,36 @@
 # pydantic-scavio
 
-Real-time Google search for [Pydantic AI](https://ai.pydantic.dev) agents, powered by [Scavio](https://scavio.dev) — a unified search API for AI agents (Google, YouTube, Amazon, Walmart, Reddit, TikTok, Instagram).
+Real-time Google search for [Pydantic AI](https://ai.pydantic.dev) agents, powered by [Scavio](https://scavio.dev) — a unified search API for AI agents (Google, YouTube, Amazon, Walmart, Reddit, TikTok, TikTok Shop, Instagram, X, LinkedIn).
 
-Every search costs 1 credit and returns Google's live results as clean, typed JSON.
+## Scope: 1 endpoint, by design
+
+This package is a **curated subset** of the Scavio API, not a wrapper around all of it. It ships exactly **1** of Scavio's 98 endpoints:
+
+| Tool | Endpoint | Platform | Credits |
+|---|---|---|---|
+| `scavio_search` | `POST /api/v2/google` | Google (web search) | 1 |
+
+That is the whole surface, and it stays that way on purpose: one small, well-described tool an agent picks correctly every time beats a hundred it has to disambiguate between.
+
+**Credits:** 1 credit per search, flat. Nothing here reaches the endpoints that cost more (YouTube transcripts are 8, Instagram is 2-10, a LinkedIn job is 30).
+
+### Reaching the rest of the API
+
+Scavio covers 98 live endpoints across ten platforms: **Google, YouTube, Amazon, Walmart, Reddit, TikTok, TikTok Shop, Instagram, X, and LinkedIn.** Point a Pydantic AI agent at the hosted MCP server for all of them:
+
+```python
+from pydantic_ai import Agent
+from pydantic_ai.mcp import MCPServerStreamableHTTP
+
+scavio = MCPServerStreamableHTTP(
+    'https://mcp.scavio.dev/mcp',
+    headers={'x-api-key': 'sk_live_...'},
+)
+
+agent = Agent('openai:gpt-5.5', toolsets=[scavio])
+```
+
+That server exposes 100 tools, one per endpoint. See the [MCP docs](https://scavio.dev/docs/mcp). Alternatively, call the `scavio` SDK directly — it is already a dependency here — and wrap whichever endpoints you need as your own tools.
 
 ## Install
 
@@ -10,7 +38,7 @@ Every search costs 1 credit and returns Google's live results as clean, typed JS
 pip install pydantic-scavio
 ```
 
-Get a free API key (50 signup credits, no credit card) at [dashboard.scavio.dev](https://dashboard.scavio.dev).
+Get a free API key (50 one-time signup credits, no monthly refill, no credit card) at [dashboard.scavio.dev](https://dashboard.scavio.dev).
 
 ## Usage
 
@@ -59,10 +87,6 @@ The tool returns `list[ScavioSearchResult]`:
 | `domain` | `str` | Result domain |
 | `content` | `str` | Snippet |
 | `date` | `str \| None` | Publication date when available |
-
-## Beyond Google
-
-The same `scavio` SDK covers YouTube, Amazon, Walmart, Reddit, TikTok, and Instagram, and Scavio also ships a hosted [MCP server](https://scavio.dev/docs/mcp) with 46 tools. See the [docs](https://scavio.dev/docs).
 
 ## License
 

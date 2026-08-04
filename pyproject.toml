@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pydantic-scavio"
-version = "0.1.0"
+version = "0.1.1"
 description = "Scavio real-time Google search tool for Pydantic AI agents"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -13,7 +13,7 @@ authors = [{ name = "Scavio", email = "support@scavio.dev" }]
 keywords = ["pydantic-ai", "pydantic", "agents", "scavio", "search", "tools", "serp", "tavily-alternative"]
 dependencies = [
     "pydantic-ai-slim>=1.0",
-    "scavio>=0.5.0",
+    "scavio>=0.14.0",
     "typing-extensions>=4.0",
 ]
 
