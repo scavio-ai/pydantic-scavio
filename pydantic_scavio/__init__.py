@@ -25,7 +25,7 @@ except ImportError as _import_error:
 
 __all__ = ('ScavioSearchResult', 'ScavioSearchTool', 'scavio_search_tool')
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 _UNSET: Any = object()
 """Sentinel to distinguish "not provided" from None in factory kwargs."""

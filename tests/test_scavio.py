@@ -3,12 +3,18 @@
 from __future__ import annotations
 
 import os
+import re
+from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from scavio import AsyncScavioClient
 
+import pydantic_scavio
 from pydantic_scavio import ScavioSearchTool, scavio_search_tool
+
+PYPROJECT = Path(__file__).resolve().parents[1] / "pyproject.toml"
+MINIMUM_SCAVIO = (0, 15, 0)
 
 V2_RESPONSE = {
     "search_information": {"total_results": 1000},
@@ -128,6 +134,25 @@ async def test_uses_google_v2_vocabulary_only():
     _, kwargs = client.google.search.call_args
     assert kwargs == {'gl': 'us', 'hl': 'en'}
     assert not {'country_code', 'language', 'light_request', 'search_type', 'page'} & set(kwargs)
+
+
+@pytest.mark.skipif(not PYPROJECT.is_file(), reason="pyproject.toml is only present in a source checkout")
+def test_version_is_declared_once_in_effect():
+    """The version lives in two files; a bump that misses one ships a lying `__version__`."""
+    declared = re.search(r'^version = "([^"]+)"', PYPROJECT.read_text(encoding="utf-8"), re.MULTILINE)
+    assert declared is not None, "pyproject.toml must declare a version"
+    assert declared.group(1) == pydantic_scavio.__version__
+
+
+@pytest.mark.skipif(not PYPROJECT.is_file(), reason="pyproject.toml is only present in a source checkout")
+def test_scavio_floor_is_current():
+    """A stale `scavio` floor lets a resolver install an SDK without the current namespaces.
+
+    The package then installs cleanly and fails at import time in someone else's agent.
+    """
+    match = re.search(r'"scavio>=(\d+)\.(\d+)\.(\d+)"', PYPROJECT.read_text(encoding="utf-8"))
+    assert match is not None, "pyproject.toml must pin a `scavio>=X.Y.Z` floor"
+    assert tuple(int(part) for part in match.groups()) >= MINIMUM_SCAVIO
 
 
 @pytest.mark.skipif("SCAVIO_API_KEY" not in os.environ, reason="requires live API key")
