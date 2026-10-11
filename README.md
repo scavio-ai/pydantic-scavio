@@ -12,7 +12,7 @@ This package is a **curated subset** of the Scavio API, not a wrapper around all
 
 That is the whole surface, and it stays that way on purpose: one small, well-described tool an agent picks correctly every time beats a hundred it has to disambiguate between.
 
-**Credits:** 1 credit per search, flat. Nothing here reaches the endpoints that cost more (YouTube transcripts are 8, Instagram is 2-10, a LinkedIn job is 30), nor the body-priced ones whose cost depends on the request rather than a flat number (Walmart, Threads, Kuaishou and `extract`).
+**Credits:** 1 credit per search, flat. Nothing here reaches the endpoints that cost more (YouTube transcripts are 5, Instagram is 2-10, a LinkedIn job is 30), nor the body-priced ones whose cost depends on the request rather than a flat number (Walmart, Threads, Kuaishou and `extract`).
 
 ### Reaching the rest of the API
 

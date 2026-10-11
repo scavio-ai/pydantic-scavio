@@ -4,6 +4,12 @@ The version is declared in `pyproject.toml` and mirrored in
 `pydantic_scavio/__init__.py`. A push to `main` publishes to PyPI when the
 `pyproject.toml` version is one PyPI does not already have.
 
+## [0.1.3]
+
+### Changed
+
+- README: YouTube transcripts cost 5 credits (was 8).
+
 ## [0.1.2]
 
 ### Changed
