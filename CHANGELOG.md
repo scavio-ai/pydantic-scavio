@@ -4,6 +4,12 @@ The version is declared in `pyproject.toml` and mirrored in
 `pydantic_scavio/__init__.py`. A push to `main` publishes to PyPI when the
 `pyproject.toml` version is one PyPI does not already have.
 
+## [0.1.4]
+
+### Changed
+
+- README: most Instagram calls cost 2 credits (was 2-10).
+
 ## [0.1.3]
 
 ### Changed
