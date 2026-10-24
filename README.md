@@ -1,10 +1,10 @@
 # pydantic-scavio
 
-Real-time Google search for [Pydantic AI](https://ai.pydantic.dev) agents, powered by [Scavio](https://scavio.dev) — a unified search API for AI agents covering 31 platforms (Google, YouTube, Amazon, Walmart, eBay, Target, Home Depot, Reddit, X, TikTok, TikTok Shop, Instagram, LinkedIn, Threads, Kuaishou, Zillow, Redfin, Booking.com, Tripadvisor, Airbnb, Yelp, Indeed, Glassdoor, the app stores, G2, Capterra, ad transparency, SEC EDGAR and Companies House) plus an Extract endpoint for any URL.
+Real-time Google search for [Pydantic AI](https://ai.pydantic.dev) agents, powered by [Scavio](https://scavio.dev) — a unified search API for AI agents covering 33 platforms (Google, YouTube, Amazon, Walmart, HEB, Kroger, eBay, Target, Home Depot, Reddit, X, TikTok, TikTok Shop, Instagram, LinkedIn, Threads, Kuaishou, Zillow, Redfin, Booking.com, Tripadvisor, Airbnb, Yelp, Indeed, Glassdoor, the app stores, G2, Capterra, ad transparency, SEC EDGAR and Companies House) plus an Extract endpoint for any URL.
 
 ## Scope: 1 endpoint, by design
 
-This package is a **curated subset** of the Scavio API, not a wrapper around all of it. It ships exactly **1** of Scavio's 195 endpoints:
+This package is a **curated subset** of the Scavio API, not a wrapper around all of it. It ships exactly **1** of Scavio's 200 endpoints:
 
 | Tool | Endpoint | Platform | Credits |
 |---|---|---|---|
@@ -16,7 +16,7 @@ That is the whole surface, and it stays that way on purpose: one small, well-des
 
 ### Reaching the rest of the API
 
-Scavio covers **195 live endpoints**: 194 across 31 platforms, plus `extract`, which reads any URL. The platforms are **Google, YouTube, Amazon, Walmart, eBay, Target, Home Depot, Reddit, X, TikTok, TikTok Shop, Instagram, LinkedIn, Threads, Kuaishou, Zillow, Redfin, Booking.com, Tripadvisor, Airbnb, Yelp, Indeed, Glassdoor, the Apple App Store, Google Play, SEC EDGAR, Companies House, G2, Capterra, Google Ads Transparency and the Meta Ad Library.** The most recent batch added 93 endpoints across 22 platforms plus `extract` — 21 of those platforms are new to Scavio and Walmart was rebuilt. **None of them are reachable through this package**, which stays at Google web search. Point a Pydantic AI agent at the hosted MCP server for all of them:
+Scavio covers **200 live endpoints**: 199 across 33 platforms, plus `extract`, which reads any URL. The platforms are **Google, YouTube, Amazon, Walmart, HEB, Kroger, eBay, Target, Home Depot, Reddit, X, TikTok, TikTok Shop, Instagram, LinkedIn, Threads, Kuaishou, Zillow, Redfin, Booking.com, Tripadvisor, Airbnb, Yelp, Indeed, Glassdoor, the Apple App Store, Google Play, SEC EDGAR, Companies House, G2, Capterra, Google Ads Transparency and the Meta Ad Library.** The most recent batch added 93 endpoints across 22 platforms plus `extract` — 21 of those platforms are new to Scavio and Walmart was rebuilt. **None of them are reachable through this package**, which stays at Google web search. Point a Pydantic AI agent at the hosted MCP server for all of them:
 
 ```python
 from pydantic_ai import Agent
