@@ -32,6 +32,8 @@ __all__ = (
     'scavio_heb_stores_tool',
     'scavio_kroger_search_tool',
     'scavio_kroger_product_tool',
+    'scavio_decathlon_search_tool',
+    'scavio_decathlon_product_tool',
 )
 
 __version__ = '0.1.5'
@@ -599,5 +601,175 @@ def scavio_kroger_product_tool(
         func,  # pyright: ignore[reportArgumentType]
         name='scavio_kroger_product',
         description='Get detailed information about a Kroger grocery product.',
+    )
+
+
+# ---------------------------------------------------------------------------
+# Decathlon tools
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class _DecathlonSearchTool:
+    """Scavio Decathlon product search tool."""
+
+    client: AsyncScavioClient
+    _: KW_ONLY
+
+    async def __call__(
+        self,
+        query: str,
+        country: str,
+        page: int | None = None,
+    ) -> dict[str, Any]:
+        """Search Decathlon products by keyword.
+
+        Supports 7 country domains: FR, ES, IT, IN, UK, PT and NET.
+
+        Args:
+            query: The search query for Decathlon products.
+            country: Country domain: 'fr', 'es', 'it', 'in', 'uk', 'pt' or 'net'.
+            page: Page number for pagination.
+
+        Returns:
+            Search results from Decathlon.
+        """
+        kwargs: dict[str, Any] = {}
+        if page is not None:
+            kwargs['page'] = page
+        return await self.client.decathlon.search(query, country=country, **kwargs)
+
+
+@overload
+def scavio_decathlon_search_tool(
+    api_key: str,
+    *,
+    page: int | None = _UNSET,
+) -> Tool[Any]: ...
+
+
+@overload
+def scavio_decathlon_search_tool(
+    *,
+    client: AsyncScavioClient,
+    page: int | None = _UNSET,
+) -> Tool[Any]: ...
+
+
+def scavio_decathlon_search_tool(
+    api_key: str | None = None,
+    *,
+    client: AsyncScavioClient | None = None,
+    page: int | None = _UNSET,
+) -> Tool[Any]:
+    """Creates a Scavio Decathlon product search tool.
+
+    Search Decathlon products by keyword across 7 country domains (FR, ES, IT,
+    IN, UK, PT, NET).
+
+    Args:
+        api_key: The Scavio API key. Required if ``client`` is not provided.
+        client: An existing AsyncScavioClient.
+        page: Page number for pagination.
+    """
+    if client is None:
+        if api_key is None:
+            raise ValueError('Either api_key or client must be provided')
+        client = AsyncScavioClient(api_key=api_key)
+    func = _DecathlonSearchTool(client=client).__call__
+
+    kwargs: dict[str, Any] = {}
+    if page is not _UNSET:
+        kwargs['page'] = page
+
+    if kwargs:
+        original = func
+        func = partial(func, **kwargs)
+        func.__name__ = original.__name__  # type: ignore[union-attr]
+        func.__qualname__ = original.__qualname__
+        orig_sig = signature(original)
+        func.__signature__ = orig_sig.replace(  # type: ignore[attr-defined]
+            parameters=[p for name, p in orig_sig.parameters.items() if name not in kwargs]
+        )
+
+    return Tool[Any](
+        func,  # pyright: ignore[reportArgumentType]
+        name='scavio_decathlon_search',
+        description=(
+            'Search Decathlon products by keyword across 7 country domains '
+            '(FR, ES, IT, IN, UK, PT, NET).'
+        ),
+    )
+
+
+@dataclass
+class _DecathlonProductTool:
+    """Scavio Decathlon product detail tool."""
+
+    client: AsyncScavioClient
+    _: KW_ONLY
+
+    async def __call__(
+        self,
+        country: str,
+        product_url: str | None = None,
+        product_id: str | None = None,
+    ) -> dict[str, Any]:
+        """Get detailed information about a Decathlon product.
+
+        Provide ``country`` and at least one identifier: ``product_url`` or ``product_id``.
+
+        Args:
+            country: Country domain: 'fr', 'es', 'it', 'in', 'uk', 'pt' or 'net'.
+            product_url: Full Decathlon product page URL.
+            product_id: Decathlon numeric product ID.
+
+        Returns:
+            Product details from Decathlon.
+        """
+        kwargs: dict[str, Any] = {}
+        if product_url is not None:
+            kwargs['product_url'] = product_url
+        if product_id is not None:
+            kwargs['product_id'] = product_id
+        return await self.client.decathlon.product(country=country, **kwargs)
+
+
+@overload
+def scavio_decathlon_product_tool(
+    api_key: str,
+) -> Tool[Any]: ...
+
+
+@overload
+def scavio_decathlon_product_tool(
+    *,
+    client: AsyncScavioClient,
+) -> Tool[Any]: ...
+
+
+def scavio_decathlon_product_tool(
+    api_key: str | None = None,
+    *,
+    client: AsyncScavioClient | None = None,
+) -> Tool[Any]:
+    """Creates a Scavio Decathlon product detail tool.
+
+    Look up detailed information for a Decathlon product by URL or product ID.
+
+    Args:
+        api_key: The Scavio API key. Required if ``client`` is not provided.
+        client: An existing AsyncScavioClient.
+    """
+    if client is None:
+        if api_key is None:
+            raise ValueError('Either api_key or client must be provided')
+        client = AsyncScavioClient(api_key=api_key)
+    func = _DecathlonProductTool(client=client).__call__
+
+    return Tool[Any](
+        func,  # pyright: ignore[reportArgumentType]
+        name='scavio_decathlon_product',
+        description='Get detailed information about a Decathlon product.',
     )
 
